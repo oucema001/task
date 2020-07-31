@@ -1,8 +1,10 @@
 package cmd
 
 import (
-	"fmt"
+	"log"
+	"strings"
 
+	"github.com/boltdb/bolt"
 	"github.com/spf13/cobra"
 )
 
@@ -18,5 +20,15 @@ func init() {
 }
 
 func doTasks(cmd *cobra.Command, args []string) {
-	fmt.Println("haha that does a list")
+	db, err := bolt.Open("my.db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("MyTasks"))
+		err := b.Delete([]byte(strings.Join(args, " ")))
+		return err
+	})
 }
