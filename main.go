@@ -1,7 +1,24 @@
 package main
 
-import "github.com/oucema001/task/cmd"
+import (
+	"fmt"
+	"os"
+
+	"github.com/oucema001/task/cmd"
+	"github.com/oucema001/task/data"
+)
 
 func main() {
-	cmd.Execute()
+	//data.Init()
+	//cmd.Execute()
+
+	must(data.Init())
+	must(cmd.Execute())
+}
+
+func must(err error) {
+	if err != nil {
+		fmt.Println(err.Error())
+		os.Exit(1)
+	}
 }
